@@ -9,11 +9,12 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 const speedText = document.getElementById("speed");
 const distanceText = document.getElementById("distance");
 const followBtn = document.getElementById("followBtn");
+const resetBtn = document.getElementById("resetBtn");
 
 // 現在地追従モード
 let followMode = true;
 
-// ボタン
+// 追従ON_OFFボタン
 followBtn.addEventListener("click", () => {
 
     followMode = !followMode;
@@ -25,6 +26,39 @@ followBtn.addEventListener("click", () => {
     } else {
 
         followBtn.textContent = "追従: OFF";
+    }
+});
+
+//移動距離_マーカーリセットボタン
+resetBtn.addEventListener("click", () => {
+
+      if (!confirm("リセットしますか？")) {
+        return;
+    }
+    
+    // 距離リセット
+    totalDistance = 0;
+
+    // 表示更新
+    distanceText.textContent =
+        "移動距離: 0 m";
+
+    // 配列初期化
+    path = [];
+
+    // 線削除
+    polyline.setLatLngs([]);
+
+    // 前回位置リセット
+    previousLat = null;
+    previousLng = null;
+
+    // マーカー削除
+    if (marker) {
+
+        map.removeLayer(marker);
+
+        marker = null;
     }
 });
 
