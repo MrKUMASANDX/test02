@@ -11,6 +11,24 @@ const distanceText = document.getElementById("distance");
 const followBtn = document.getElementById("followBtn");
 const resetBtn = document.getElementById("resetBtn");
 
+const toggleGpsBtn =
+    document.getElementById("toggleGpsBtn");
+
+const gpsData =
+    document.getElementById("gpsData");
+
+const latitudeText =
+    document.getElementById("latitude");
+
+const longitudeText =
+    document.getElementById("longitude");
+
+const altitudeText =
+    document.getElementById("altitude");
+
+const accuracyText =
+    document.getElementById("accuracy");
+
 // 現在地追従モード
 let followMode = true;
 
@@ -62,6 +80,28 @@ resetBtn.addEventListener("click", () => {
     }
 });
 
+let gpsVisible = true;
+
+toggleGpsBtn.addEventListener("click", () => {
+
+    gpsVisible = !gpsVisible;
+
+    if (gpsVisible) {
+
+        gpsData.style.display = "block";
+
+        toggleGpsBtn.textContent =
+            "GPS情報を隠す";
+
+    } else {
+
+        gpsData.style.display = "none";
+
+        toggleGpsBtn.textContent =
+            "GPS情報を表示";
+    }
+});
+
 // マーカー
 const gpsIcon = L.icon({
 
@@ -105,11 +145,38 @@ navigator.geolocation.watchPosition(
 function success(position) {
 
     const lat = position.coords.latitude;
+    const altitude = position.coords.altitude;
+
+    const accuracy = position.coords.accuracy;
+    
     const lng = position.coords.longitude;
 
     // 速度
     let speed = position.coords.speed;
 
+    // 緯度経度
+    latitudeText.textContent =
+    `緯度: ${lat.toFixed(6)}`;
+
+    longitudeText.textContent =
+        `経度: ${lng.toFixed(6)}`;
+    
+    // 高度
+    if (altitude !== null) {
+    
+        altitudeText.textContent =
+            `高度: ${altitude.toFixed(1)} m`;
+    
+    } else {
+    
+        altitudeText.textContent =
+            "高度: 取得不可";
+    }
+    
+    // 精度
+    accuracyText.textContent =
+        `精度: ${accuracy.toFixed(1)} m`;
+    
     // null対策
     if (speed === null) {
         speed = 0;
