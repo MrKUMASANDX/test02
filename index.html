@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>現在地マップ</title>
 
-    <!-- Leaflet CSS -->
+    <title>GPSマップ</title>
+
     <link
         rel="stylesheet"
         href="https://unpkg.com/leaflet/dist/leaflet.css"
@@ -15,20 +15,28 @@
 </head>
 <body>
 
-    <h1>現在地を表示</h1>
+    <h1>GPS追跡マップ</h1>
 
-    <button id="getLocationBtn">
-        現在地を取得
-    </button>
+    <div id="info">
+
+        <p id="speed">
+            速度: 0 km/h
+        </p>
+
+        <p id="distance">
+            移動距離: 0 m
+        </p>
+
+        <button id="followBtn">
+            追従: ON
+        </button>
+
+    </div>
 
     <div id="map"></div>
 
-    <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
     <script src="script.js"></script>
 
 </body>
 </html>
-
-
