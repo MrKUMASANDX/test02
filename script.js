@@ -29,6 +29,15 @@ followBtn.addEventListener("click", () => {
 });
 
 // マーカー
+const gpsIcon = L.icon({
+
+    iconUrl: 'location.png',
+
+    iconSize: [40, 40],
+
+    iconAnchor: [20, 20]
+});
+
 let marker;
 
 // 経路
@@ -119,7 +128,12 @@ function success(position) {
     // マーカー
     if (!marker) {
 
-        marker = L.marker([lat, lng])
+       marker = L.marker(
+    [lat, lng],
+    {
+        icon: gpsIcon
+    }
+    )
             .addTo(map)
             .bindPopup("現在地")
             .openPopup();
