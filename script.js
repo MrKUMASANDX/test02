@@ -142,10 +142,10 @@ navigator.geolocation.watchPosition(
 );
 
 // 成功
-function success(position) {
+async function success(position) {
 
     const lat = position.coords.latitude;
-    const altitude = position.coords.altitude;
+    let altitude = "取得中...";
 
     const accuracy = position.coords.accuracy;
     
@@ -160,17 +160,39 @@ function success(position) {
 
     longitudeText.textContent =
         `経度: ${lng.toFixed(6)}`;
+
+    try {
+
+        // 国土地理院 標高API
+        const url =
+            `https://cyberjapandata2.gsi.go.jp/general/dem/scripts/getelevation.php?lon=${lng}&lat=${lat}&outtype=JSON`;
     
+        // API通信
+        const response = await fetch(url);
+    
+        // JSONへ変換
+        const data = await response.json();
+    
+        // 標高取得
+        altitude = data.elevation;
+    
+    } catch(error) {
+
+        console.log(error);
+    
+        altitude = "取得失敗";
+    }
+
     // 高度
-    if (altitude !== null) {
-    
+   if (typeof altitude === "number") {
+
         altitudeText.textContent =
-            `高度: ${altitude.toFixed(1)} m`;
+            `標高: ${altitude.toFixed(1)} m`;
     
     } else {
     
         altitudeText.textContent =
-            "高度: 取得不可";
+            `標高: ${altitude}`;
     }
     
     // 精度
