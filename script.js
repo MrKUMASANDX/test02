@@ -73,6 +73,12 @@ const toggleGpsBtn =
 const evacuationBtn =
     document.getElementById("evacuationBtn");
 
+const normalMapBtn =
+    document.getElementById("normalMapBtn");
+
+const reliefMapBtn =
+    document.getElementById("reliefMapBtn");
+
 const gpsData =
     document.getElementById("gpsData");
 
@@ -274,10 +280,6 @@ evacuationBtn.addEventListener("click", () => {
 
     if (evacuationMode) {
 
-        map.removeLayer(normalMap);
-
-        evacuationMap.addTo(map);
-
         floodMap.addTo(map);
 
         evacuationBtn.textContent =
@@ -303,11 +305,11 @@ evacuationBtn.addEventListener("click", () => {
 
     } else {
 
-        map.removeLayer(evacuationMap);
+            if (map.hasLayer(floodMap)) {
+        
+                map.removeLayer(floodMap);
+            }
 
-        map.removeLayer(floodMap);
-
-        normalMap.addTo(map);
 
         evacuationBtn.textContent =
             "避難モード: OFF";
@@ -321,6 +323,44 @@ evacuationBtn.addEventListener("click", () => {
     }
 });
 
+// =====================
+// 通常地図ボタン
+// =====================
+
+normalMapBtn.addEventListener("click", () => {
+
+    // 地形図が表示中なら消す
+    if (map.hasLayer(evacuationMap)) {
+
+        map.removeLayer(evacuationMap);
+    }
+
+    // 通常地図が未表示なら追加
+    if (!map.hasLayer(normalMap)) {
+
+        normalMap.addTo(map);
+    }
+});
+
+
+// =====================
+// 地形図ボタン
+// =====================
+
+reliefMapBtn.addEventListener("click", () => {
+
+    // 通常地図が表示中なら消す
+    if (map.hasLayer(normalMap)) {
+
+        map.removeLayer(normalMap);
+    }
+
+    // 地形図が未表示なら追加
+    if (!map.hasLayer(evacuationMap)) {
+
+        evacuationMap.addTo(map);
+    }
+});
 
 // =====================
 // GPS追跡
