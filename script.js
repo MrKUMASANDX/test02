@@ -1,15 +1,37 @@
 const map = L.map('map').setView([35.681236, 139.767125], 13);
 
 // 地図表示
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors'
-}).addTo(map);
+// 通常マップ
+const normalMap = L.tileLayer(
+
+    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+
+    {
+        attribution: '&copy; OpenStreetMap contributors'
+    }
+);
+
+// 避難用地形マップ
+const evacuationMap = L.tileLayer(
+
+    'https://cyberjapandata.gsi.go.jp/xyz/relief/{z}/{x}/{y}.png',
+
+    {
+        attribution: '国土地理院'
+    }
+);
+
+// 最初は通常マップ表示
+normalMap.addTo(map);
 
 // 要素
 const speedText = document.getElementById("speed");
 const distanceText = document.getElementById("distance");
 const followBtn = document.getElementById("followBtn");
 const resetBtn = document.getElementById("resetBtn");
+// 追加
+const evacuationBtn =
+    document.getElementById("evacuationBtn");
 
 const toggleGpsBtn =
     document.getElementById("toggleGpsBtn");
@@ -44,6 +66,40 @@ followBtn.addEventListener("click", () => {
     } else {
 
         followBtn.textContent = "追従: OFF";
+    }
+});
+
+// =====================
+// 避難モード切替
+// =====================
+
+let evacuationMode = false;
+
+evacuationBtn.addEventListener("click", () => {
+
+    evacuationMode = !evacuationMode;
+
+    if (evacuationMode) {
+
+        // 通常地図削除
+        map.removeLayer(normalMap);
+
+        // 避難地図追加
+        evacuationMap.addTo(map);
+
+        evacuationBtn.textContent =
+            "避難モード: ON";
+
+    } else {
+
+        // 避難地図削除
+        map.removeLayer(evacuationMap);
+
+        // 通常地図追加
+        normalMap.addTo(map);
+
+        evacuationBtn.textContent =
+            "避難モード: OFF";
     }
 });
 
