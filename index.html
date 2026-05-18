@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>防災避難支援マップ</title>
 
-    <title>GPSマップ</title>
-
+    <!-- Leaflet CSS -->
     <link
         rel="stylesheet"
         href="https://unpkg.com/leaflet/dist/leaflet.css"
@@ -13,73 +13,88 @@
 
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-    <h1>GPS追跡マップ</h1>
+    <h1>防災避難支援マップ</h1>
 
     <div id="info">
 
+        <!-- 速度 -->
         <p id="speed">
             速度: 0 km/h
         </p>
 
+        <!-- 移動距離 -->
         <p id="distance">
             移動距離: 0 m
         </p>
 
-    <!-- GPS情報 -->
-    <div id="gpsData">
+        <!-- GPS情報 -->
+        <div id="gpsData">
 
-        <p id="latitude">
-            緯度: -
-        </p>
+            <p id="latitude">
+                緯度: -
+            </p>
 
-        <p id="longitude">
-            経度: -
-        </p>
+            <p id="longitude">
+                経度: -
+            </p>
 
-        <p id="altitude">
-            高度: -
-        </p>
+            <p id="altitude">
+                標高: -
+            </p>
 
-        <p id="accuracy">
-            精度: -
-        </p>
+            <p id="accuracy">
+                精度: -
+            </p>
 
+        </div>
 
-    </div>
-
-
+        <!-- 追従ボタン -->
         <button id="followBtn">
             追従: ON
         </button>
 
+        <!-- リセットボタン -->
         <button id="resetBtn">
-        リセット
+            リセット
         </button>
 
-        
+        <!-- GPS表示切替 -->
         <button id="toggleGpsBtn">
             GPS情報を隠す
         </button>
 
+        <!-- 避難モード -->
         <button id="evacuationBtn">
             避難モード: OFF
         </button>
 
+        <!-- 高台方向 -->
         <p id="safeDirection">
             高台方向: -
         </p>
-        
+
+        <!-- 危険警告 -->
         <p id="dangerWarning">
             警告: なし
         </p>
 
+        <!-- 最寄り避難所 -->
+        <p id="nearestShelter">
+            最寄り避難所: -
+        </p>
+
     </div>
 
+    <!-- 地図 -->
     <div id="map"></div>
 
+    <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <!-- JavaScript -->
     <script src="script.js"></script>
 
 </body>
