@@ -21,6 +21,52 @@ const evacuationMap = L.tileLayer(
     }
 );
 
+// 洪水ハザードマップ
+const floodMap = L.tileLayer(
+
+    'https://disaportaldata.gsi.go.jp/raster/01_flood_l2_shinsuishin_data/{z}/{x}/{y}.png',
+
+    {
+        attribution: '国土地理院 洪水浸水想定'
+    }
+);
+
+// 避難所サンプル
+const shelters = [
+
+    {
+        name: "新発田市カルチャーセンター",
+        lat: 37.9495,
+        lng: 139.3270
+    },
+
+    {
+        name: "加治川地区公民館",
+        lat: 37.8460,
+        lng: 139.2920
+    },
+
+    {
+        name: "紫雲寺地区公民館",
+        lat: 37.8890,
+        lng: 139.2600
+    },
+
+    {
+        name: "豊浦地区公民館",
+        lat: 37.9600,
+        lng: 139.2450
+    },
+
+    {
+        name: "川東コミュニティセンター",
+        lat: 37.9130,
+        lng: 139.3800
+    }
+];
+
+let shelterMarkers = [];
+
 // 最初は通常マップ表示
 normalMap.addTo(map);
 
@@ -32,6 +78,15 @@ const resetBtn = document.getElementById("resetBtn");
 // 追加
 const evacuationBtn =
     document.getElementById("evacuationBtn");
+
+const safeDirectionText =
+    document.getElementById("safeDirection");
+
+const dangerWarningText =
+    document.getElementById("dangerWarning");
+
+const nearestShelterText =
+    document.getElementById("nearestShelter");
 
 const toggleGpsBtn =
     document.getElementById("toggleGpsBtn");
@@ -87,6 +142,34 @@ evacuationBtn.addEventListener("click", () => {
         // 避難地図追加
         evacuationMap.addTo(map);
 
+        // 洪水マップ追加
+        floodMap.addTo(map);
+        
+        // 避難所表示
+        shelters.forEach((shelter) => {
+        
+            const marker = L.marker(
+                [shelter.lat, shelter.lng]
+                {
+                    icon: shelterIcon
+                }
+            )
+            const shelterIcon = L.icon({
+
+                iconUrl: 'shelter.png',
+            
+                iconSize: [40, 40],
+            
+                iconAnchor: [20, 40]
+            });
+        
+            .addTo(map)
+        
+            .bindPopup(shelter.name);
+        
+            shelterMarkers.push(marker);
+        });
+
         evacuationBtn.textContent =
             "避難モード: ON";
 
@@ -97,6 +180,17 @@ evacuationBtn.addEventListener("click", () => {
 
         // 通常地図追加
         normalMap.addTo(map);
+
+        // 洪水マップ削除
+        map.removeLayer(floodMap);
+        
+        // 避難所削除
+        shelterMarkers.forEach((marker) => {
+        
+            map.removeLayer(marker);
+        });
+        
+        shelterMarkers = [];
 
         evacuationBtn.textContent =
             "避難モード: OFF";
@@ -231,6 +325,68 @@ async function success(position) {
     
         // 標高取得
         altitude = data.elevation;
+
+        if (
+            typeof altitude === "number" &&
+            altitude < 5
+        ) {
+        
+            dangerWarningText.textContent =
+                "警告: 標高が低いです";
+
+            let nearestShelter = null;
+
+            let minDistance = Infinity;
+            
+            // 全避難所チェック
+            shelters.forEach((shelter) => {
+            
+                const distance = getDistance(
+            
+                    lat,
+                    lng,
+            
+                    shelter.lat,
+                    shelter.lng
+                );
+            
+                // 最短更新
+                if (distance < minDistance) {
+            
+                    minDistance = distance;
+            
+                    nearestShelter = shelter;
+                }
+            });
+            
+            // 表示
+            if (nearestShelter) {
+            
+                let distanceText;
+            
+                // m / km 切替
+                if (minDistance < 1000) {
+            
+                    distanceText =
+                        `${minDistance.toFixed(0)} m`;
+            
+                } else {
+            
+                    distanceText =
+                        `${(minDistance / 1000).toFixed(2)} km`;
+                }
+            
+                nearestShelterText.textContent =
+            
+                    `最寄り避難所: ${nearestShelter.name}
+            距離: ${distanceText}`;
+            }
+        
+        } else {
+        
+            dangerWarningText.textContent =
+                "警告: なし";
+        }
     
     } catch(error) {
 
@@ -239,6 +395,15 @@ async function success(position) {
         altitude = "取得失敗";
     }
 
+    const safeHeight = 20;
+    
+    const diff =
+        safeHeight - altitude;
+    
+    console.log(
+        `安全標高まであと ${diff.toFixed(1)} m`
+    );
+    
     // 高度
    if (typeof altitude === "number") {
 
